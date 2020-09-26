@@ -34,8 +34,8 @@ ma = Marshmallow(app)
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'nikedtechstartup@gmail.com'
-app.config['MAIL_PASSWORD'] = 'startupnik51'
+app.config['MAIL_USERNAME'] = 'asimfarooq5@gmail.com'
+app.config['MAIL_PASSWORD'] = 'cryptology00'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
@@ -59,7 +59,7 @@ def send():
 
 def _send_push(title, message):
     data = {"data": {"title": f'{title}', "message": f'{message}'},
-            "to": "/topics/all_users"}
+            "to": "/topics/location"}
     requests.post(URL_FCM, data=json.dumps(data), headers=HEADER)
 
 
@@ -94,6 +94,22 @@ class NamesResource(Resource):
         names = ['mahad', 'muzammil', 'hamza', 'husnain',
                  'shahid', 'bilal', 'asim', 'omer']
         return names, 200
+
+
+class LocationResource(Resource):
+    def post(self):
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument('latlong', type=str, help='Lat, Long', required=True)
+        args = parser.parse_args(strict=True)
+        return args['latlong'], 200
+
+
+class StatusResource(Resource):
+    def post(self):
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument('status', type=str, help='Status of location/internt', required=True)
+        args = parser.parse_args(strict=True)
+        return args['status'], 200
 
 
 class UserResource(Resource):
@@ -236,6 +252,8 @@ admin.add_link(MenuLink(name='Send Message', category='', url="/message"))
 api.add_resource(NamesResource, '/api/names/')
 api.add_resource(UserResource, '/api/users/')
 api.add_resource(Applogin, '/api/login/')
+api.add_resource(LocationResource, '/api/location/')
+api.add_resource(StatusResource, '/api/status/')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=7000, debug=True)
